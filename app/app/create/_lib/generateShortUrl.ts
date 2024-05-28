@@ -1,5 +1,3 @@
-'use server'
-
 import { BASE_62_CHAR_SET, SHORT_LINK_LENGTH } from "@/app/constants"
 
 export const generateShortUrl = () => {
