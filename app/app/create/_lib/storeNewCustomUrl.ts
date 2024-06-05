@@ -8,22 +8,32 @@ export const storeNewCustomUrl = async (url: string, customUrl: string, username
   const lowerCaseUsername = username.toLocaleLowerCase()
   const { data } = await supabase.from("urls").select().eq('short_url', customUrl);
   const alreadyExistsShortUrl = !!data?.length
-  const isValidCustomShortUrl = checkValidCustomShortUrl(customUrl)
+  const isValidCustomShortUrl = await checkValidCustomShortUrl(customUrl)
   let errorMessage: string;
 
   if (data === null) {
     errorMessage = "I am sorry, there is an error with the database, please contact me in github";
-    throw new Error(errorMessage);
+    return {
+      newUrl: '',
+      errorMessage: errorMessage
+    }
   };
 
   if (alreadyExistsShortUrl) {
     errorMessage = "I am sorry, the short url already exists, please try another one";
-    throw new Error(errorMessage);
+    return {
+      newUrl: '',
+      errorMessage: errorMessage
+    }
   };
 
-  if (!isValidCustomShortUrl.isValid) {
+  if (!(isValidCustomShortUrl.isValid)) {
     errorMessage = isValidCustomShortUrl.message;
-    throw new Error(errorMessage);
+
+    return {
+      newUrl: '',
+      errorMessage: errorMessage
+    }
   }
 
   await supabase.from("urls").insert([
@@ -33,4 +43,9 @@ export const storeNewCustomUrl = async (url: string, customUrl: string, username
       short_url: customUrl,
     }
   ]);
+
+  return {
+    newUrl: customUrl,
+    errorMessage: ''
+  };
 }

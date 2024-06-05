@@ -3,7 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { generateShortUrl } from "./generateShortUrl";
 
-export const storeNewUrl = async (url: string, username: string) => {
+export const storeNewGeneratedUrl = async (url: string, username: string) => {
   const supabase = createClient();
   const lowerCaseUsername = username.toLocaleLowerCase()
   let newShortUrl: string;
@@ -31,7 +31,10 @@ export const storeNewUrl = async (url: string, username: string) => {
   }
 
   if (errorMessage !== '') {
-    throw new Error(errorMessage);
+    return {
+      newUrl: '',
+      errorMessage: errorMessage
+    };
   };
 
   await supabase.from("urls").insert([
@@ -42,5 +45,8 @@ export const storeNewUrl = async (url: string, username: string) => {
     }
   ]);
 
-  return newShortUrl;
+  return {
+    newUrl: newShortUrl,
+    errorMessage: ''
+  };
 }
