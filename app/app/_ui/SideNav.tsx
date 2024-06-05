@@ -6,6 +6,10 @@ const links = [
     href: '/'
   },
   {
+    name: 'App Home',
+    href: '/app'
+  },
+  {
     name: 'Create',
     href: '/app/create'
   },
