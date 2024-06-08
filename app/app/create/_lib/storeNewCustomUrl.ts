@@ -8,6 +8,7 @@ export const storeNewCustomUrl = async (url: string, customUrl: string, username
   const lowerCaseUsername = username.toLocaleLowerCase()
   const { data } = await supabase.from("urls").select().eq('short_url', customUrl);
   const alreadyExistsShortUrl = !!data?.length
+  // For some reason, I have to await checkValidCustomUrl, even though it is not asynchronous
   const isValidCustomShortUrl = await checkValidCustomShortUrl(customUrl)
   let errorMessage: string;
 

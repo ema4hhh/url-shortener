@@ -56,12 +56,20 @@ function Form() {
 
   return (
     <>
-      <button onClick={handleClick}>{isCustomUrl ? 'Generated URL' : 'Custom URL'}</button>
-      {
-        isCustomUrl
-          ? <CustomUrlForm newUrl={newUrl} errorMessage={errorMessage} handleSubmit={handleSubmit} />
-          : <GeneratedUrlForm newUrl={newUrl} errorMessage={errorMessage} handleSubmit={handleSubmit} />
-      }
+      <button className="primary-button" onClick={handleClick}>{isCustomUrl ? 'Generated URL' : 'Custom URL'}</button>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        {
+          isCustomUrl
+            ? <CustomUrlForm newUrl={newUrl} errorMessage={errorMessage} handleSubmit={handleSubmit} />
+            : <GeneratedUrlForm newUrl={newUrl} errorMessage={errorMessage} handleSubmit={handleSubmit} />
+        }
+        {
+          newUrl && <output>Short URL: {newUrl}</output>
+        }
+        {
+          errorMessage && <p>Something went wrong: <br /> <strong>{errorMessage}</strong></p>
+        }
+      </form>
     </>
   )
 }
