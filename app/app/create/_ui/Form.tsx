@@ -5,6 +5,7 @@ import { storeNewGeneratedUrl } from "../_lib/storeNewGeneratedUrl";
 import GeneratedUrlForm from "./GeneratedUrlForm";
 import CustomUrlForm from "./CustomUrlForm";
 import { storeNewCustomUrl } from "../_lib/storeNewCustomUrl";
+import Link from "next/link";
 
 function Form() {
   const [errorMessage, setErrorMessage] = useState('')
@@ -57,19 +58,19 @@ function Form() {
   return (
     <>
       <button className="primary-button" onClick={handleClick}>{isCustomUrl ? 'Generated URL' : 'Custom URL'}</button>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <form onSubmit={handleSubmit}>
         {
           isCustomUrl
             ? <CustomUrlForm newUrl={newUrl} errorMessage={errorMessage} handleSubmit={handleSubmit} />
             : <GeneratedUrlForm newUrl={newUrl} errorMessage={errorMessage} handleSubmit={handleSubmit} />
         }
         {
-          newUrl && <output>Short URL: {newUrl}</output>
-        }
-        {
-          errorMessage && <p>Something went wrong: <br /> <strong>{errorMessage}</strong></p>
+          newUrl && <output>Short URL: <strong><Link href={`${window.location.origin}/${newUrl}`}>{newUrl}</Link></strong></output>
         }
       </form>
+      {
+        errorMessage && <p>Something went wrong: <br /> <strong>{errorMessage}</strong></p>
+      }
     </>
   )
 }
