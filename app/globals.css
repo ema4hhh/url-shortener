@@ -4,12 +4,11 @@
 
 @layer base {
   main {
-    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    @apply bg-slate-50 px-2 py-1 md:px-1;
+    @apply bg-slate-50 px-2 py-1 md:px-1 min-h-full;
   }
 
   h1 {
@@ -20,12 +19,24 @@
     @apply text-2xl
   }
 
+  h5 {
+    @apply text-xl
+  }
+
+  h6 {
+    @apply text-sm text-gray-600
+  }
+
   label {
     @apply flex gap-2 justify-center items-center
   }
 
   input {
     @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+  }
+
+  form {
+    @apply flex flex-col gap-3
   }
 
   .link {
