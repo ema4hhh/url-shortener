@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { getUserLinks } from "./_lib/getUserLinks";
 import { DataBaseUrlSchema } from "@/types";
 import Form from "./_ui/Form";
@@ -8,33 +8,16 @@ import { deleteUrl } from "./_lib/deleteUrl";
 import Loading from "./loading";
 import LinksList from "./_ui/LinksList";
 
-function Page() {
+function useGetUserLinks() {
   const [links, setLinks] = useState<DataBaseUrlSchema[]>([]);
   const [username, setUsername] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleClick = async(shortUrl: string) => {
-    const error = await deleteUrl(shortUrl)
-
-    if (error) {
-      setError(error.message)
-      return
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (links.length) return;
-
+  const fetchUserLinks = async (username: string) => {
     setLoading(true)
-    const form = e.currentTarget;
-    const formData = new FormData(form);
 
-    const username = formData.get('username')?.toString() ?? 'admin'
-
-    const response = await getUserLinks(username) 
+    const response = await getUserLinks(username)
 
     if (response.error) {
       setError(response.error.message)
@@ -49,9 +32,41 @@ function Page() {
 
     response.data = responseWithCompleteShortUrl
 
+    setLinks(response.data)
     setLoading(false)
     setUsername(username)
-    setLinks(response.data)
+  }
+
+  return { links, username, error, setError, loading, fetchUserLinks }
+}
+
+function Page() {
+  const { links, username, error, setError, loading, fetchUserLinks } = useGetUserLinks()
+
+  const handleClick = async(shortUrl: string) => {
+    const error = await deleteUrl(shortUrl)
+
+    if (error) {
+      setError(error.message)
+      return
+    }
+
+    if (username === '') return
+
+    fetchUserLinks(username)
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (links.length) return;
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const username = formData.get('username')?.toString() ?? 'admin'
+
+    fetchUserLinks(username)
   }
 
   return (
@@ -73,7 +88,7 @@ function Page() {
         }
 
         {
-          loading && <Loading />
+          (loading && !(links.length)) && <Loading />
         }
 
         {
